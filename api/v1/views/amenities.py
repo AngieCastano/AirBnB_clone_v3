@@ -52,7 +52,7 @@ def create_new_amenity():
 
 @app_views.route('/amenities/<amenity_id>',
                  methods=['PUT'], strict_slashes=False)
-def update_amenity(city_id=None):
+def update_amenity(amenity_id=None):
     """update amenity"""
     new_dict = storage.get('Amenity', amenity_id)
     if new_dict is None:
