@@ -60,6 +60,9 @@ def update_amenity(city_id=None):
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
-    new_dict.__dict__.update(**reqst)
+    for key in ('id', 'created_at', 'updated_at', 'state_id'):
+        reqst.pop(key, None)
+    for key, value in reqst.items():
+        setattr(new_dict, key, value)
     storage.save()
     return jsonify(new_dict.to_dict()), 200
