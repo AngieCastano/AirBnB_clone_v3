@@ -5,7 +5,7 @@ from flask import jsonify, abort, request
 from models import storage
 from models.review import Review
 
-@app_views.route('/places/<place_id>/reviews', methods='GET',
+@app_views.route('/places/<place_id>/reviews', methods=['GET'],
                  strict_slashes=False)
 def all_reviews(place_id=None):
     """ show all reviews """
@@ -15,7 +15,7 @@ def all_reviews(place_id=None):
     new_reviews = [review.to_dict() for review in new_place.new_reviews]
     return jsonify(new_reviews)
 
-@app_views.route('/reviews/<review_id>',  methods='GET',
+@app_views.route('/reviews/<review_id>',  methods=['GET'],
                  strict_slashes=False)
 def show_one_review(review_id):
     """ show one review """
@@ -33,7 +33,7 @@ def delete_review(review_id):
     storage.delete(new_review)
     return jsonify({}), 200
 
-@app_views.route('places/<place_id>/reviews/',  methods='POST',
+@app_views.route('places/<place_id>/reviews/',  methods=['POST'],
                  strict_slashes=False)
 def create_review(place_id):
     """ create a new review """
@@ -52,7 +52,7 @@ def create_review(place_id):
     reviews.save()
     return jsonify(reviews.to_dict()), 201
 
-@app_views.route('reviews/<review_id>/',  methods='PUT',
+@app_views.route('reviews/<review_id>/',  methods=['PUT'],
                  strict_slashes=False)
 def update_review(review_id):
     """ update one review """
@@ -62,7 +62,7 @@ def update_review(review_id):
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON'
-    for key in ('id', 'user_id', 'place_id', 'created_at', 'update_at'):
+    for key in ('id', 'user_id{', 'place_id', 'created_at', 'update_at'):
         reqst.pop(key, None)
     for key, value in reqst.items():
         setattr(new_review, key, value)
