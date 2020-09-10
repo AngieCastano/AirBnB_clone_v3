@@ -11,7 +11,7 @@ app.register_blueprint(app_views, url_prefix='/api/v1')
 
 
 @app.teardown_appcontext
-def tear_down(error):
+def tear_down(self):
     """ closing storage """
     storage.close()
 
@@ -20,7 +20,6 @@ def tear_down(error):
 def not_found(error):
     """page not found"""
     return make_response(jsonify({'error': 'Not found'}), 404)
-
 
 if __name__ == '__main__':
     host_flask = getenv("HBNB_API_HOST") or '0.0.0.0'

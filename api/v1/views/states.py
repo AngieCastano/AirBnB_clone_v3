@@ -40,3 +40,14 @@ def create_state():
     new_state = State(**reqst)
     new_state.save()
     return jsonify(new_state.to_dict()), 201
+
+@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
+def update_state(state_id=None):
+    """ update state """
+    new_dict = storage.get('State', state_id)
+    reqst = request.get_json()
+    if reqst  is None:
+        return 'Not a JSON', 400
+    new_dict.__dict__.update(**reqst)
+    storage.save()
+    return jsonify(new_dict.to_dict()), 200
