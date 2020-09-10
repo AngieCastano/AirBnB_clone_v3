@@ -10,7 +10,7 @@ from models.user import User
                  methods=['GET'], strict_slashes=False)
 def all_users():
     """ Return all Users"""
-    user_dict = [user.to_dict()for user in storage.all("User")]
+    user_dict = [user.to_dict() for user in storage.all("User").values()]
     return jsonify(user_dict)
 
 
@@ -47,22 +47,22 @@ def create_new_user():
         return 'Missing email', 400
     if 'password' not in reqst:
         return 'Missing password', 400
-    new_User = User(**reqst)
+    new_user = User(**reqst)
     new_user.save()
     return jsonify(new_user.to_dict()), 201
 
 
-@app_views.route('/amenities/<amenity_id>',
+@app_views.route('/users/<user_id>',
                  methods=['PUT'], strict_slashes=False)
-def update_user(city_id=None):
-    """update amenity"""
+def update_user(user_id=None):
+    """update user"""
     new_dict = storage.get('User', user_id)
     if new_dict is None:
         abort(404)
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
-    for key in ('id', 'created_at', 'updated_at', 'state_id'):
+    for key in ('id', 'created_at', 'updated_at', 'email'):
         reqst.pop(key, None)
     for key, value in reqst.items():
         setattr(new_dict, key, value)

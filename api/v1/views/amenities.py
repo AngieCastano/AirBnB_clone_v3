@@ -10,7 +10,8 @@ from models.amenity import Amenity
                  methods=['GET'], strict_slashes=False)
 def all_amenities():
     """ Return all amenities"""
-    amenity_dict = [amenity.to_dict()for amenity in storage.all("Amenity")]
+    amenity_dict = [amenity.to_dict() for amenity in storage.
+                    all("Amenity").values()]
     return jsonify(amenity_dict)
 
 
@@ -52,7 +53,7 @@ def create_new_amenity():
 
 @app_views.route('/amenities/<amenity_id>',
                  methods=['PUT'], strict_slashes=False)
-def update_amenity(city_id=None):
+def update_amenity(amenity_id=None):
     """update amenity"""
     new_dict = storage.get('Amenity', amenity_id)
     if new_dict is None:
