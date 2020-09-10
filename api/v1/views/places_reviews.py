@@ -24,7 +24,7 @@ def show_one_review(review_id):
         abort(404)
     return jsonify(new_review.to_dict())
 
-@app_views.route('/reviews/<review_id>',  methods='DELETE',
+@app_views.route('/reviews/<review_id>',  methods=['DELETE'],
                  strict_slashes=False)
 def delete_review(review_id):
     new_review = storage.get('Review', review_id)
