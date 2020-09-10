@@ -7,29 +7,27 @@ from models.state import State
 from models.place import Place
 
 
-@app_views.route('/cities/<city_id>/places',
-                 methods=['GET'], strict_slashes=False)
-def places_city(city_id=None):
+@app_views.route('/cities/<city_id>/places', methods=['GET'],
+                 strict_slashes=False)
+def get_places_city(city_id=None):
     """ Retrieves the list of all Place objects of a City"""
-    city = storage.get("City",  city_id)
-    if state is None:
+    city = storage.get("City", city_id)
+    if city is None:
         abort(404)
-    places_list = city.places
-    places_dict = [place.to_dict()for place in places_list]
+    places_dict = [place.to_dict() for place in city.places]
     return jsonify(places_dict)
 
-
-@app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
-def ret_pace_id(place_id=None):
+@app_views.route('/places/<place_id>', methods=['GET'],
+                 strict_slashes=False)
+def ret_palce_id(place_id=None):
     """Retrieves a Place object"""
-    place = storage.get('Place',  place_id)
+    place = storage.get('Place', place_id)
     if place is None:
         abort(404)
     return jsonify(place.to_dict())
 
-
-@app_views.route('/places/<place_id>',
-                 methods=['DELETE'], strict_slashes=False)
+@app_views.route('/places/<place_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_place(place_id=None):
     """Delete place / id"""
     new_dict = storage.get('Place', place_id)
@@ -39,9 +37,8 @@ def delete_place(place_id=None):
     storage.save()
     return jsonify({}), 200
 
-
-@app_views.route('/cities/<city_id>/places',
-                 methods=['POST'], strict_slashes=False)
+@app_views.route('/cities/<city_id>/places', methods=['POST'],
+                 strict_slashes=False)
 def create_place_with_city_id(city_id=None):
     """creates a place"""
     city = storage.get("City", city_id)
@@ -57,8 +54,8 @@ def create_place_with_city_id(city_id=None):
         abort(404)
     if 'name' not in reqst:
         return 'Missing name', 400
+    reqst['city_id'] = city_id
     new_place = Place(**reqst)
-    new_place.city_id = city_id
     new_place.save()
     return jsonify(new_place.to_dict()), 201
 
@@ -72,7 +69,7 @@ def update_place(place_id=None):
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
-    for key in ('id', 'created_at', 'updated_at', 'state_id'):
+    for key in ('id', 'user_id', 'city_id', 'created_at', 'updated_at'):
         reqst.pop(key, None)
     for key, value in reqst.items():
         setattr(new_dict, key, value)
