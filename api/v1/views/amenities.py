@@ -64,5 +64,5 @@ def update_amenity(city_id=None):
         reqst.pop(key, None)
     for key, value in reqst.items():
         setattr(new_dict, key, value)
-    storage.save()
+    new_dict.save()
     return jsonify(new_dict.to_dict()), 200
