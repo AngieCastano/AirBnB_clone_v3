@@ -52,6 +52,9 @@ def update_state(state_id=None):
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
-    new_dict.__dict__.update(**reqst)
-    storage.save()
+    for key in ('id', 'created_at', 'updated_at'):
+        reqst.pop(key, None)
+    for key , value in reqst.items():
+        setattr(new_dict, key, value)
+    new_dict.save()
     return jsonify(new_dict.to_dict()), 200
