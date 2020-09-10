@@ -54,7 +54,7 @@ def update_state(state_id=None):
         return 'Not a JSON', 400
     for key in ('id', 'created_at', 'updated_at'):
         reqst.pop(key, None)
-    for key , value in reqst.items():
+    for key, value in reqst.items():
         setattr(new_dict, key, value)
     new_dict.save()
     return jsonify(new_dict.to_dict()), 200
