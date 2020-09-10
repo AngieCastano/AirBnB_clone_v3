@@ -26,7 +26,7 @@ def delete_state(state_id=None):
     if new_dict is None:
         abort(404)
     storage.delete(new_dict)
-    storage.reload()
+    storage.save()
     return jsonify({}), 200
 
 @app_views.route('/states/', methods=['POST'], strict_slashes=False)
