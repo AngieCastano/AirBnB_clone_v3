@@ -1,34 +1,34 @@
 #!/usr/bin/python3
-""" state module """
+""" amenity module """
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
 from models.amenity import Amenity
 
 
-@app_views.route('/amenities',
+@app_views.route('/users',
                  methods=['GET'], strict_slashes=False)
-def all_amenities():
-    """ Return all amenities"""
-    amenity_dict = [amenity.to_dict()for amenity in storage.all("Amenity")]
-    return jsonify(amenity_dict)
+def all_users():
+    """ Return all Users"""
+    user_dict = [user.to_dict()for user in storage.all("User")]
+    return jsonify(user_dict)
 
 
-@app_views.route('/amenities/<amenity_id>',
+@app_views.route('/users/<user_id>',
                  methods=['GET'], strict_slashes=False)
-def ret_amenity_id(amenity_id=None):
-    """Retrieves a Amenity object"""
-    amenity = storage.get('Amenity',  amenity_id)
-    if amenity is None:
+def ret_user_id(user_id=None):
+    """Retrieves a User object"""
+    user = storage.get('User',  user_id)
+    if user is None:
         abort(404)
-    return jsonify(amenity.to_dict())
+    return jsonify(user.to_dict())
 
 
-@app_views.route('/amenities/<amenity_id>',
+@app_views.route('/users/<user_id>',
                  methods=['DELETE'], strict_slashes=False)
-def delete_amenity(amenity_id=None):
+def delete_user(user_id=None):
 
-    new_dict = storage.get('Amenity', amenity_id)
+    new_dict = storage.get('User', user_id)
     if new_dict is None:
         abort(404)
     storage.delete(new_dict)
@@ -36,17 +36,19 @@ def delete_amenity(amenity_id=None):
     return jsonify({}), 200
 
 
-@app_views.route('/amenities',
+@app_views.route('/users',
                  methods=['POST'], strict_slashes=False)
 def create_new_amenity():
     """creates an amenity"""
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
-    if 'name' not in reqst:
-        return 'Missing name', 400
-    new_amenity = Amenity(**reqst)
-    new_amenity.save()
+    if 'email' not in reqst:
+        return 'Missing email', 400
+    if 'password' not in reqst:
+        return 'Missing password', 400
+    new_User = User(**reqst)
+    new_user.save()
     return jsonify(new_amenity.to_dict()), 201
 
 
