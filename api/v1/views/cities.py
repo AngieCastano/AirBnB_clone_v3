@@ -51,8 +51,8 @@ def create_city_with_state_id(state_id=None):
         return 'Not a JSON', 400
     if 'name' not in reqst:
         return 'Missing name', 400
-    new_city = City({"state_id": state_id})
-    new_city.__dict__.update(**reqst)
+    new_city = City(**reqst)
+    new_city.state_id = state_id
     new_city.save()
     return jsonify(new_city.to_dict()), 201
 
