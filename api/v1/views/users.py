@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" amenity module """
+""" user module """
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
@@ -38,7 +38,7 @@ def delete_user(user_id=None):
 
 @app_views.route('/users',
                  methods=['POST'], strict_slashes=False)
-def create_new_amenity():
+def create_new_user():
     """creates an amenity"""
     reqst = request.get_json()
     if reqst is None:
@@ -49,14 +49,14 @@ def create_new_amenity():
         return 'Missing password', 400
     new_User = User(**reqst)
     new_user.save()
-    return jsonify(new_amenity.to_dict()), 201
+    return jsonify(new_user.to_dict()), 201
 
 
 @app_views.route('/amenities/<amenity_id>',
                  methods=['PUT'], strict_slashes=False)
-def update_amenity(city_id=None):
+def update_user(city_id=None):
     """update amenity"""
-    new_dict = storage.get('Amenity', amenity_id)
+    new_dict = storage.get('User', user_id)
     if new_dict is None:
         abort(404)
     reqst = request.get_json()
