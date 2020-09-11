@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ palce module """
 from api.v1.views import app_views
-from flask import jsonify, abort, request
+from flask import jsonify, abort, request, make_response
 from models import storage
 from models.state import State
 from models.place import Place
@@ -41,23 +41,24 @@ def delete_place(place_id=None):
                  strict_slashes=False)
 def create_place_with_city_id(city_id=None):
     """creates a place"""
-    city = storage.get("City", city_id)
-    if city is None:
-        abort(404)
-    reqst = request.get_json()
-    if reqst is None:
-        return 'Not a JSON', 400
-    if 'user_id' not in reqst:
-        return 'Missing user_id', 400
-    user = storage.get("User", user_id)
-    if user is None:
-        abort(404)
-    if 'name' not in reqst:
-        return 'Missing name', 400
-    reqst['city_id'] = city_id
-    new_place = Place(**reqst)
-    new_place.save()
-    return jsonify(new_place.to_dict()), 201
+    if request.method == 'POST':
+        city = storage.get("City", city_id)
+        if city is None:
+            abort(404)
+        reqst = request.get_json()
+        if reqst is None:
+            return 'Not a JSON', 400
+        if 'user_id' not in reqst:
+            return 'Missing user_id', 400
+        user = storage.get("User", reqst.get("user_id"))
+        if user is None:
+            abort(404)
+        if 'name' not in reqst:
+            return 'Missing name', 400
+        reqst['city_id'] = city_id
+        new_place = Place(**reqst)
+        new_place.save()
+        return jsonify(new_place.to_dict()), 201
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
