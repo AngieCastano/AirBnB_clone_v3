@@ -10,9 +10,9 @@ from models.review import Review
 def all_reviews(place_id=None):
     """ show all reviews """
     new_place = storage.get('Place', place_id)
-    if new_dict is None:
+    if new_place is None:
         abort(404)
-    new_reviews = [review.to_dict() for review in new_place.new_reviews]
+    new_reviews = [review.to_dict() for review in new_place.reviews]
     return jsonify(new_reviews)
 
 @app_views.route('/reviews/<review_id>',  methods=['GET'],
@@ -31,6 +31,7 @@ def delete_review(review_id):
     if new_review is None:
         abort(404)
     storage.delete(new_review)
+    storage.save()
     return jsonify({}), 200
 
 @app_views.route('places/<place_id>/reviews/',  methods=['POST'],
