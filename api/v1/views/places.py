@@ -7,7 +7,7 @@ from models.state import State
 from models.place import Place
 
 
-@app_views.route('/cities/<city_id>/places', methods=['GET'],
+@app_views.route('/cities/<city_id>/places/', methods=['GET'],
                  strict_slashes=False)
 def get_places_city(city_id=None):
     """ Retrieves the list of all Place objects of a City"""
@@ -17,7 +17,7 @@ def get_places_city(city_id=None):
     places_dict = [place.to_dict() for place in city.places]
     return jsonify(places_dict)
 
-@app_views.route('/places/<place_id>', methods=['GET'],
+@app_views.route('/places/<place_id>/', methods=['GET'],
                  strict_slashes=False)
 def ret_palce_id(place_id=None):
     """Retrieves a Place object"""
@@ -26,7 +26,7 @@ def ret_palce_id(place_id=None):
         abort(404)
     return jsonify(place.to_dict())
 
-@app_views.route('/places/<place_id>', methods=['DELETE'],
+@app_views.route('/places/<place_id>/', methods=['DELETE'],
                  strict_slashes=False)
 def delete_place(place_id=None):
     """Delete place / id"""
@@ -37,7 +37,7 @@ def delete_place(place_id=None):
     storage.save()
     return jsonify({}), 200
 
-@app_views.route('/cities/<city_id>/places', methods=['POST'],
+@app_views.route('/cities/<city_id>/places/', methods=['POST'],
                  strict_slashes=False)
 def create_place_with_city_id(city_id=None):
     """creates a place"""
@@ -61,7 +61,7 @@ def create_place_with_city_id(city_id=None):
         return jsonify(new_place.to_dict()), 201
 
 
-@app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
+@app_views.route('/places/<place_id>/', methods=['PUT'], strict_slashes=False)
 def update_place(place_id=None):
     """update place"""
     new_dict = storage.get('Place', place_id)
