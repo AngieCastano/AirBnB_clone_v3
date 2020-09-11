@@ -28,7 +28,8 @@ def ret_city_id(city_id=None):
     return jsonify(city.to_dict())
 
 
-@app_views.route('/cities/<city_id>/', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/cities/<city_id>/',
+                 methods=['DELETE'], strict_slashes=False)
 def delete_city(city_id=None):
 
     new_dict = storage.get('City', city_id)
