@@ -70,7 +70,7 @@ def update_review(review_id):
         abort(404)
     reqst = request.get_json()
     if reqst is None:
-        return 'Not a JSON'
+        return 'Not a JSON', 400
     for key in ('id', 'user_id', 'place_id', 'created_at', 'update_at'):
         reqst.pop(key, None)
     for key, value in reqst.items():
