@@ -49,6 +49,8 @@ def create_state():
 def update_state(state_id=None):
     """ update state """
     new_dict = storage.get('State', state_id)
+    if new_dict is None:
+        abort(404)
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
