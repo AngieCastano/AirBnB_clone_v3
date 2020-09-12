@@ -93,7 +93,6 @@ class TestFileStorage(unittest.TestCase):
         storage = FileStorage()
         new_state = State()
         state_id = new_state.id
-        print(state_id)
         get_state = storage.get("State", state_id)
-        print(get_state.id)
         self.assertIs(new_state, get_state)
+        self.assertEqual(storage.cout("State"), 1)
