@@ -49,6 +49,9 @@ def create_review(place_id):
         return 'Missing user_id', 400
     if 'text' not in reqst.keys():
         return 'Missing text', 400
+    new_place = storage.get('Place', place_id)
+    if new_place is None:
+        abort(404)
     new_user = storage.get('User', reqst['user_id'])
     if new_user is None:
         abort(404)
@@ -68,7 +71,7 @@ def update_review(review_id):
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON'
-    for key in ('id', 'user_id{', 'place_id', 'created_at', 'update_at'):
+    for key in ('id', 'user_id', 'place_id', 'created_at', 'update_at'):
         reqst.pop(key, None)
     for key, value in reqst.items():
         setattr(new_review, key, value)
