@@ -96,7 +96,7 @@ class DBStorage:
         return len(self.all(cls))
 
     def places_amenities(self, amenity_id=None):
-        """ Return every place with amenity_id from the place_amenity table"""
+        """ Return every place with amenity_id from the place_amenity table / no pep8"""
         return_from_mysql = self.__engine.execute("SELECT place_id FROM place_amenity WHERE amenity_id = \"{}\"".format(amenity_id))
         places_with_same_amenity = return_from_mysql.cursor._rows
         print(type(places_with_same_amenity[0][0]))
