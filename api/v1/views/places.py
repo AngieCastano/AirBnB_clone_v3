@@ -96,7 +96,7 @@ def retreive_places_depending_on_a_foreign_id():
                 place = storage.get('Place', place_id)
                 if place is None:
                     abort(404)
-                list_of_places_with_same_amenity.append(place.to_dict())
+                list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
         else:
             set_of_unique_places_id = {""}
             for amenity in amenities:
