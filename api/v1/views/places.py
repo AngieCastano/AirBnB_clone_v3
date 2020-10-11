@@ -98,12 +98,14 @@ def retreive_places_depending_on_a_foreign_id():
                     abort(404)
                 list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
         else:
-            set_of_unique_places_id = {""}
+            
+            set_of_unique_places_id = [item[0] for item in storage.places_amenities(amenities[0])]
             for amenity in amenities:
                 places_with_same_amenity =  storage.places_amenities(amenity)
-                set_of_unique_places_id.update(list_of_places_with_same_amenity)
-                for place_ in places_with_same_amenity:
-                    list_of_places_with_same_amenity.append(place_[0])
+                list_of_places_with_same_amenity = [item[0] for item in storage.places_amenities(amenity)]
+                for item1 in set_of_unique_places_id:
+                        if item1 not in list_of_places_with_same_amenity:
+                            set_of_unique_places_id.remove(item1)
             for place_id in set_of_unique_places_id:
                 place = storage.get('Place', place_id)
                 if place:
