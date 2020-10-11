@@ -111,3 +111,35 @@ def retreive_places_depending_on_a_foreign_id():
                 if place:
                     list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
         return jsonify(list_of_dictionaries_places_with_same_amenity)
+    states = reqst.get("states")
+    cities = reqst.get("cities")
+    list_of_cities_id = []
+    if states and cities:
+        state = storage.get('State', states[0])
+        city_ids_of_first_state = [city.id for city in state.cities]
+        for state_id in states:
+            state = storage.get('State', state_id)
+            if state:
+                list_of_cities_id = [city.id for city in state.cities]
+            for item1 in list_of_cities_id:
+                if item1 not in city_ids_of_first_state:
+                    city_ids_of_first_state.append(item1)
+        last_city_ids = city_ids_of_first_state
+    elif states:
+        last_city_ids = []
+        for state_id in states:
+            state = storage.get('State', state_id)
+            if state:
+                list_of_cities_id = [city.id for city in state.cities]
+                last_city_ids += list_of_cities_id
+    elif cities:
+        last_city_ids = cities
+    list_of_dictionaries_places_of_cities = []
+    for city_id in last_city_ids:
+        city = storage.get('City', city_id)
+        places_of_cities = [place.id for place in city.places]
+        for place_id in places_of_cities:
+            place = storage.get('Place', place_id)
+            list_of_dictionaries_places_of_cities.append(place.to_dict())
+    print(list_of_dictionaries_places_of_cities)
+    return jsonify(list_of_dictionaries_places_of_cities)
