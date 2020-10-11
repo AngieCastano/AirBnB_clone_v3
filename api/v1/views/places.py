@@ -85,6 +85,13 @@ def update_place(place_id=None):
 def retreive_places_depending_on_a_foreign_id():
     """Retreive a place depending on State or City or Amenity id"""
     reqst = request.get_json()
+    if reqst is None:
+        return 'Not a JSON', 400
+    print("LENGHT OF REQUEST DICTINARY", len(reqst))
+    if len(reqst) == 0:
+        new_dict = [place.to_dict() for place in storage.all('Place').values()]
+        return jsonify(new_dict)
+    reqst = request.get_json()
     amenities = reqst.get("amenities")
     if amenities:
         list_of_places_with_same_amenity = []
@@ -141,5 +148,4 @@ def retreive_places_depending_on_a_foreign_id():
         for place_id in places_of_cities:
             place = storage.get('Place', place_id)
             list_of_dictionaries_places_of_cities.append(place.to_dict())
-    print(list_of_dictionaries_places_of_cities)
     return jsonify(list_of_dictionaries_places_of_cities)
