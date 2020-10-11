@@ -85,14 +85,27 @@ def update_place(place_id=None):
 def retreive_places_depending_on_a_foreign_id():
     """Retreive a place depending on State or City or Amenity id"""
     reqst = request.get_json()
-    list_of_places_with_same_amenity = []
     amenities = reqst.get("amenities")
-    for amenity_id in amenities:
-        places_with_same_amenity =  storage.places_amenities(amenity_id)    
-        for place_ in places_with_same_amenity:
-            place_id = place_[0]
-            place = storage.get('Place', place_id)
-            if place is None:
-                abort(404)
-            list_of_places_with_same_amenity.append(place.to_dict())
-    return jsonify(list_of_places_with_same_amenity)
+    if amenities:
+        list_of_places_with_same_amenity = []
+        list_of_dictionaries_places_with_same_amenity = []
+        if len(amenities) == 1:
+            places_with_same_amenity =  storage.places_amenities(amenities[0])    
+            for place_ in places_with_same_amenity:
+                place_id = place_[0]
+                place = storage.get('Place', place_id)
+                if place is None:
+                    abort(404)
+                list_of_places_with_same_amenity.append(place.to_dict())
+        else:
+            set_of_unique_places_id = {""}
+            for amenity in amenities:
+                places_with_same_amenity =  storage.places_amenities(amenity)
+                set_of_unique_places_id.update(list_of_places_with_same_amenity)
+                for place_ in places_with_same_amenity:
+                    list_of_places_with_same_amenity.append(place_[0])
+            for place_id in set_of_unique_places_id:
+                place = storage.get('Place', place_id)
+                if place:
+                    list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
+        return jsonify(list_of_dictionaries_places_with_same_amenity)
