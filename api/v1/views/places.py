@@ -79,3 +79,19 @@ def update_place(place_id=None):
         setattr(new_dict, key, value)
     new_dict.save()
     return jsonify(new_dict.to_dict()), 200
+
+@app_views.route('/places_search/', methods=['POST'],
+                 strict_slashes=False)
+def retreive_places_depending_on_a_foreign_id():
+    """Retreive a place depending on State or City or Amenity id"""
+    reqst = request.get_json()
+    amenity_id = reqst.get("amenity_id")
+    places_with_same_amenity =  storage.places_amenities(amenity_id)
+    list_of_places_with_same_amenity = []
+    for place_ in places_with_same_amenity:
+        place_id = place_[0]
+        place = storage.get('Place', place_id)
+        if place is None:
+            abort(404)
+        list_of_places_with_same_amenity.append(place.to_dict())
+    return jsonify(list_of_places_with_same_amenity)
