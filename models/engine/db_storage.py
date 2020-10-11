@@ -99,5 +99,4 @@ class DBStorage:
         """ Return every place with amenity_id from the place_amenity table / no pep8"""
         return_from_mysql = self.__engine.execute("SELECT place_id FROM place_amenity WHERE amenity_id = \"{}\"".format(amenity_id))
         places_with_same_amenity = return_from_mysql.cursor._rows
-        print(type(places_with_same_amenity[0][0]))
         return places_with_same_amenity
