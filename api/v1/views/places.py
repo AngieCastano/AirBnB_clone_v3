@@ -121,17 +121,17 @@ def retreive_places_depending_on_a_foreign_id():
     states = reqst.get("states")
     cities = reqst.get("cities")
     list_of_cities_id = []
+    last_city_ids = []
     if states and cities:
         state = storage.get('State', states[0])
         city_ids_of_first_state = [city.id for city in state.cities]
         for state_id in states:
             state = storage.get('State', state_id)
             if state:
-                list_of_cities_id = [city.id for city in state.cities]
-            for item1 in list_of_cities_id:
-                if item1 not in city_ids_of_first_state:
-                    city_ids_of_first_state.append(item1)
-        last_city_ids = city_ids_of_first_state
+                last_city_ids += [city.id for city in state.cities]
+        for item1 in cities:
+            if item1 not in last_city_ids:
+                last_city_ids.append(item1)
     elif states:
         last_city_ids = []
         for state_id in states:
