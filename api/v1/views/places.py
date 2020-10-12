@@ -87,7 +87,6 @@ def retreive_places_depending_on_a_foreign_id():
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
-    print("LENGHT OF REQUEST DICTINARY", len(reqst))
     if len(reqst) == 0:
         new_dict = [place.to_dict() for place in storage.all('Place').values()]
         return jsonify(new_dict)
@@ -119,7 +118,8 @@ def retreive_places_depending_on_a_foreign_id():
                 place = storage.get('Place', place_id)
                 if place:
                     list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
-        return jsonify(list_of_dictionaries_places_with_same_amenity)
+        if len(reqst) == 1:
+            return jsonify(list_of_dictionaries_places_with_same_amenity)
     states = reqst.get("states")
     cities = reqst.get("cities")
     list_of_cities_id = []
