@@ -93,6 +93,7 @@ def retreive_places_depending_on_a_foreign_id():
         return jsonify(new_dict)
     reqst = request.get_json()
     amenities = reqst.get("amenities")
+    set_of_unique_places_id = []
     if amenities:
         list_of_places_with_same_amenity = []
         list_of_dictionaries_places_with_same_amenity = []
@@ -104,6 +105,7 @@ def retreive_places_depending_on_a_foreign_id():
                 if place is None:
                     abort(404)
                 list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
+            set_of_unique_places_id = places_with_same_amenity
         else:
             
             set_of_unique_places_id = [item[0] for item in storage.places_amenities(amenities[0])]
@@ -145,6 +147,10 @@ def retreive_places_depending_on_a_foreign_id():
     for city_id in last_city_ids:
         city = storage.get('City', city_id)
         places_of_cities = [place.id for place in city.places]
+        if len(set_of_unique_places_id) > 0:
+            for item1 in places_of_cities:
+                if item1 not in set_of_unique_places_id:
+                    places_of_cities.remove(item1)
         for place_id in places_of_cities:
             place = storage.get('Place', place_id)
             list_of_dictionaries_places_of_cities.append(place.to_dict())
