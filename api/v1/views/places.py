@@ -80,6 +80,7 @@ def update_place(place_id=None):
     new_dict.save()
     return jsonify(new_dict.to_dict()), 200
 
+
 @app_views.route('/places_search/', methods=['POST'],
                  strict_slashes=False)
 def retreive_places_depending_on_a_foreign_id():
@@ -93,9 +94,9 @@ def retreive_places_depending_on_a_foreign_id():
     reqst = request.get_json()
     amenities = reqst.get("amenities")
     print(amenities)
-    set_of_unique_places_id = []
+    UniPLaces = []
     if amenities:
-        list_of_places_with_same_amenity = []
+        LPlacesSameAmenity = []
         dict_place_amenity = []
         if len(amenities) == 1:
             places_with_same_amenity = storage.places_amenities(amenities[0])
@@ -105,17 +106,16 @@ def retreive_places_depending_on_a_foreign_id():
                 if place is None:
                     abort(404)
                 dict_place_amenity.append(place.to_dict())
-            set_of_unique_places_id = places_with_same_amenity
+            UniPLaces = places_with_same_amenity
         else:
-            
-            set_of_unique_places_id = [item[0] for item in storage.places_amenities(amenities[0])]
+            UniPLaces = [item[0] for item in storage.places_amenities(amenities[0])]
             for amenity in amenities:
-                places_with_same_amenity =  storage.places_amenities(amenity)
-                list_of_places_with_same_amenity = [item[0] for item in storage.places_amenities(amenity)]
-                for item1 in set_of_unique_places_id:
-                        if item1 not in list_of_places_with_same_amenity:
-                            set_of_unique_places_id.remove(item1)
-            for place_id in set_of_unique_places_id:
+                places_with_same_amenity = storage.places_amenities(amenity)
+                LPlacesSameAmenity = [i[0] for i in storage.places_amenities(amenity)]
+                for item1 in UniPLaces:
+                        if item1 not in LPlacesSameAmenity:
+                            UniPLaces.remove(item1)
+            for place_id in UniPLaces:
                 place = storage.get('Place', place_id)
                 if place:
                     dict_place_amenity.append(place.to_dict())
@@ -148,11 +148,12 @@ def retreive_places_depending_on_a_foreign_id():
     for city_id in last_city_ids:
         city = storage.get('City', city_id)
         places_of_cities = [place.id for place in city.places]
-        if len(set_of_unique_places_id) > 0:
+        if len(UniPLaces) > 0:
             for item1 in places_of_cities:
-                if item1 not in set_of_unique_places_id:
+                if item1 not in UniPLaces:
                     places_of_cities.remove(item1)
         for place_id in places_of_cities:
             place = storage.get('Place', place_id)
             list_of_dictionaries_places_of_cities.append(place.to_dict())
     return jsonify(list_of_dictionaries_places_of_cities)
+    
