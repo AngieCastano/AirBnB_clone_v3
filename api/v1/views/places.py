@@ -87,12 +87,12 @@ def retreive_places_depending_on_a_foreign_id():
     reqst = request.get_json()
     if reqst is None:
         return 'Not a JSON', 400
-    print("LENGHT OF REQUEST DICTINARY", len(reqst))
     if len(reqst) == 0:
         new_dict = [place.to_dict() for place in storage.all('Place').values()]
         return jsonify(new_dict)
     reqst = request.get_json()
     amenities = reqst.get("amenities")
+    set_of_unique_places_id = []
     if amenities:
         list_of_places_with_same_amenity = []
         list_of_dictionaries_places_with_same_amenity = []
@@ -106,18 +106,19 @@ def retreive_places_depending_on_a_foreign_id():
                 list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
         else:
             
-            set_of_unique_places_id = [item[0] for item in storage.places_amenities(amenities[0])]
+            set_of_unique_places_id_in_amenities = [item[0] for item in storage.places_amenities(amenities[0])]
             for amenity in amenities:
                 places_with_same_amenity =  storage.places_amenities(amenity)
                 list_of_places_with_same_amenity = [item[0] for item in storage.places_amenities(amenity)]
-                for item1 in set_of_unique_places_id:
+                for item1 in set_of_unique_places_id_in_amenities:
                         if item1 not in list_of_places_with_same_amenity:
-                            set_of_unique_places_id.remove(item1)
-            for place_id in set_of_unique_places_id:
+                            set_of_unique_places_id_in_amenities.remove(item1)
+            for place_id in set_of_unique_places_id_in_amenities:
                 place = storage.get('Place', place_id)
                 if place:
                     list_of_dictionaries_places_with_same_amenity.append(place.to_dict())
-        return jsonify(list_of_dictionaries_places_with_same_amenity)
+        if len(reqst) == 1:
+            return jsonify(list_of_dictionaries_places_with_same_amenity)
     states = reqst.get("states")
     cities = reqst.get("cities")
     list_of_cities_id = []
@@ -145,6 +146,10 @@ def retreive_places_depending_on_a_foreign_id():
     for city_id in last_city_ids:
         city = storage.get('City', city_id)
         places_of_cities = [place.id for place in city.places]
+        if set_of_unique_places_id:
+            for item1 in places_of_cities:
+                if item1 not in set_of_unique_places_id_in_amenities:
+                    places_of_cities.remove(item1)                   
         for place_id in places_of_cities:
             place = storage.get('Place', place_id)
             list_of_dictionaries_places_of_cities.append(place.to_dict())
